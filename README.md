@@ -2,7 +2,7 @@
 
 A fullscreen terminal UI for Git.
 
-<img src="screenshot.png" />
+<img src="https://github.com/tu4mo/fuckgit/raw/main/screenshot.png" />
 
 ## Keybindings
 
