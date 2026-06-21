@@ -1,10 +1,9 @@
-import { git, gitAllowFailure } from "./git.js";
+import { gitAllowFailure } from "./git.js";
 
 export function getDiff(path: string, staged: boolean, untracked: boolean): string {
-  try {
-    if (untracked) return gitAllowFailure("diff", "--no-index", "/dev/null", path);
-    return staged ? git("diff", "--cached", path) : git("diff", path);
-  } catch {
-    return "";
-  }
+  if (untracked) return gitAllowFailure("diff", "--no-index", "/dev/null", path);
+  // git diff exits 1 when differences are found (not an error), so use gitAllowFailure
+  return staged
+    ? gitAllowFailure("diff", "--cached", path)
+    : gitAllowFailure("diff", path);
 }

@@ -14,6 +14,6 @@ export function parseDiff(raw: string): DiffLine[] {
     if (line.startsWith("@@")) return { kind: "hunk", text: line };
     if (line.startsWith("+")) return { kind: "add", text: line.slice(1) };
     if (line.startsWith("-")) return { kind: "remove", text: line.slice(1) };
-    return { kind: "context", text: line };
+    return { kind: "context", text: line.slice(1) };
   });
 }

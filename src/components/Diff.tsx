@@ -1,4 +1,5 @@
 import { Box, Text, useInput } from "ink";
+import { ScrollView, type ScrollViewRef } from "ink-scroll-view";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { type DiffLine, parseDiff } from "../lib/diff.js";
@@ -19,21 +20,21 @@ function lineBg(line: DiffLine): string | undefined {
 
 export function Diff({ file, focused, height, width }: Props) {
   const [lines, setLines] = useState<DiffLine[]>([]);
-  const [scrollOffset, setScrollOffset] = useState(0);
   const [horizontalOffset, setHorizontalOffset] = useState(0);
+  const scrollRef = useRef<ScrollViewRef>(null);
   const prevFileRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (!file) {
       setLines([]);
-      setScrollOffset(0);
+      scrollRef.current?.scrollToTop();
       return;
     }
     const diff = getDiff(file.path, file.staged, file.status === "UNTRACKED");
     const parsed = parseDiff(diff);
     setLines(parsed);
     if (prevFileRef.current !== file.path) {
-      setScrollOffset(0);
+      scrollRef.current?.scrollToTop();
       setHorizontalOffset(0);
     }
     prevFileRef.current = file.path;
@@ -43,19 +44,14 @@ export function Diff({ file, focused, height, width }: Props) {
 
   useInput(
     (_, key) => {
-      const visibleCount = height - 2;
-      const maxScroll = Math.max(0, lines.length - visibleCount);
       const maxHorizontal = Math.max(0, maxLineLength - width);
-      if (key.upArrow) setScrollOffset((s) => Math.max(0, s - 1));
-      if (key.downArrow) setScrollOffset((s) => Math.min(maxScroll, s + 1));
+      if (key.upArrow) scrollRef.current?.scrollBy(-1);
+      if (key.downArrow) scrollRef.current?.scrollBy(1);
       if (key.leftArrow) setHorizontalOffset((s) => Math.max(0, s - 1));
       if (key.rightArrow) setHorizontalOffset((s) => Math.min(maxHorizontal, s + 1));
     },
     { isActive: focused },
   );
-
-  const visibleCount = height - 2;
-  const visible = lines.slice(scrollOffset, scrollOffset + visibleCount);
 
   return (
     <Box flexDirection="column" width={width} height={height} overflow="hidden">
@@ -63,14 +59,16 @@ export function Diff({ file, focused, height, width }: Props) {
         diff
       </Text>
       <Box height={1} />
-      {visible.map((line, i) => {
-        const content = line.text.slice(horizontalOffset, horizontalOffset + width) || " ";
-        return (
-          <Box key={i} width="100%" backgroundColor={lineBg(line)}>
-            <Text color={line.kind === "hunk" ? "cyan" : "white"}>{content}</Text>
-          </Box>
-        );
-      })}
+      <ScrollView ref={scrollRef} height={height - 2} width={width}>
+        {lines.map((line, i) => {
+          const content = line.text.slice(horizontalOffset, horizontalOffset + width) || " ";
+          return (
+            <Box key={i} width="100%" backgroundColor={lineBg(line)}>
+              <Text color={line.kind === "hunk" ? "cyan" : "white"}>{content}</Text>
+            </Box>
+          );
+        })}
+      </ScrollView>
     </Box>
   );
 }
