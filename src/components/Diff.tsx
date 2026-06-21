@@ -55,10 +55,9 @@ export function Diff({ file, focused, width }: Props) {
   );
 
   return (
-    <Box flexDirection="column" width={width}>
-      <Box ref={ref}>
-        <Text bold color="whiteBright">
-          {" "}
+    <Box flexDirection="column" width={width} ref={ref}>
+      <Box marginLeft={1}>
+        <Text bold color={focused ? "whiteBright" : "gray"}>
           {file && file.path}
         </Text>
       </Box>

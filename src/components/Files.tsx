@@ -1,6 +1,6 @@
 import { Box, Text, useInput } from "ink";
 import { ScrollList } from "ink-scroll-list";
-import { useEffect, useMemo, useState, type ComponentProps } from "react";
+import { useEffect, useState, type ComponentProps } from "react";
 
 import { useRepository } from "../hooks/useRepository.js";
 import { type ChangedFile, type GitFileStatus } from "../lib/git/index.js";
@@ -22,7 +22,6 @@ const STATUS_SYMBOLS: Record<GitFileStatus, string> = {
 
 export function Files({ width, focused, onSelectedFile }: Props) {
   const { files, branch, stage, unstage } = useRepository();
-  const folder = useMemo(() => process.cwd().split("/").pop(), []);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
@@ -48,16 +47,9 @@ export function Files({ width, focused, onSelectedFile }: Props) {
 
   return (
     <Box flexDirection="column" width={width}>
-      <Box>
-        <Text>
-          <Text bold color={"whiteBright"}>
-            {" "}
-            {folder}
-          </Text>
-          <Text color="gray">{" → "}</Text>
-          <Text bold color={"whiteBright"}>
-            {branch}
-          </Text>
+      <Box marginLeft={1}>
+        <Text bold color={focused ? "whiteBright" : "gray"}>
+          {branch}
         </Text>
       </Box>
       <Box borderColor={focused ? "white" : "gray"} borderStyle="round" flexGrow={1}>
@@ -76,8 +68,10 @@ export function Files({ width, focused, onSelectedFile }: Props) {
               >
                 <Text color={file.staged ? "green" : "gray"}>{file.staged ? "●" : "○"} </Text>
                 <Box flexGrow={1} overflow="hidden">
-                  <Text>{name}</Text>
-                  {dir ? <Text color="gray"> {dir}</Text> : null}
+                  <Text wrap="hard">
+                    <Text>{name}</Text>
+                    {dir ? <Text color="gray"> {dir}</Text> : null}
+                  </Text>
                 </Box>
                 <Text color="gray"> {STATUS_SYMBOLS[file.status]}</Text>
               </Box>
