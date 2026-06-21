@@ -61,33 +61,29 @@ export function Files({ width, focused, onSelectedFile }: Props) {
         </Text>
       </Box>
       <Box borderColor={focused ? "white" : "gray"} borderStyle="round" flexGrow={1}>
-        {files.length === 0 ? (
-          <Text color="gray">no changes</Text>
-        ) : (
-          <ScrollList height="100%" selectedIndex={selectedIndex} width="100%">
-            {files.map((file, i) => {
-              const parts = file.path.split("/");
-              const name = parts.at(-1) ?? file.path;
-              const dir = parts.slice(0, -1).join("/");
+        <ScrollList height="100%" selectedIndex={selectedIndex} width="100%">
+          {files.map((file, i) => {
+            const parts = file.path.split("/");
+            const name = parts.at(-1) ?? file.path;
+            const dir = parts.slice(0, -1).join("/");
 
-              return (
-                <Box
-                  key={file.path}
-                  backgroundColor={i === selectedIndex ? "#222" : undefined}
-                  paddingX={1}
-                  height={1}
-                >
-                  <Text color={file.staged ? "green" : "gray"}>{file.staged ? "●" : "○"} </Text>
-                  <Box flexGrow={1} overflow="hidden">
-                    <Text>{name}</Text>
-                    {dir ? <Text color="gray"> {dir}</Text> : null}
-                  </Box>
-                  <Text color="gray"> {STATUS_SYMBOLS[file.status]}</Text>
+            return (
+              <Box
+                key={file.path}
+                backgroundColor={i === selectedIndex ? "#222" : undefined}
+                paddingX={1}
+                height={1}
+              >
+                <Text color={file.staged ? "green" : "gray"}>{file.staged ? "●" : "○"} </Text>
+                <Box flexGrow={1} overflow="hidden">
+                  <Text>{name}</Text>
+                  {dir ? <Text color="gray"> {dir}</Text> : null}
                 </Box>
-              );
-            })}
-          </ScrollList>
-        )}
+                <Text color="gray"> {STATUS_SYMBOLS[file.status]}</Text>
+              </Box>
+            );
+          })}
+        </ScrollList>
       </Box>
     </Box>
   );
