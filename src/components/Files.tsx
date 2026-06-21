@@ -50,6 +50,7 @@ export function Files({ width, height, focused, onSelectedFile }: Props) {
         </Text>
       </Text>
       <Box height={1} />
+      {files.length === 0 && <Text color="gray">no changes</Text>}
       <ScrollList height={height - 2} selectedIndex={selectedIndex} scrollAlignment="center">
         {files.map((file, i) => {
           const parts = file.path.split("/");
