@@ -35,7 +35,7 @@ function App() {
           focused={focusedPane === "files"}
           onSelectedFile={setSelectedFile}
         />
-        <Box width={2} />
+        <Box width={1} />
         <Diff
           file={selectedFile}
           focused={focusedPane === "diff"}
