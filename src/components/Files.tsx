@@ -12,7 +12,7 @@ type Props = {
   onSelectedFile: (file: ChangedFile | undefined) => void;
 };
 
-export function Changes({ width, height, focused, onSelectedFile }: Props) {
+export function Files({ width, height, focused, onSelectedFile }: Props) {
   const { files, stage, unstage } = useRepository();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -40,7 +40,7 @@ export function Changes({ width, height, focused, onSelectedFile }: Props) {
   return (
     <Box flexDirection="column" width={width} height={height}>
       <Text bold color={focused ? "whiteBright" : "gray"}>
-        changes
+        files
       </Text>
       <Box height={1} />
       <ScrollList height={height - 2} selectedIndex={selectedIndex} scrollAlignment="center">

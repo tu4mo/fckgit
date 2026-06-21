@@ -56,7 +56,7 @@ export function Diff({ file, focused, height, width }: Props) {
   return (
     <Box flexDirection="column" width={width} height={height} overflow="hidden">
       <Text bold color={focused ? "whiteBright" : "gray"}>
-        diff
+        {file ? file.path : "(no file selected)"}
       </Text>
       <Box height={1} />
       <ScrollView ref={scrollRef} height={height - 2} width={width}>
