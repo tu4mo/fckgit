@@ -58,7 +58,7 @@ export function Diff({ file, focused, width }: Props) {
     <Box flexDirection="column" width={width} ref={ref}>
       <Box marginLeft={1}>
         <Text bold color={focused ? "whiteBright" : "gray"}>
-          {file && file.path}
+          {file ? file.path : "no file selected"}
         </Text>
       </Box>
       <ScrollView
