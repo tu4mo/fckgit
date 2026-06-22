@@ -73,7 +73,9 @@ export function Files({ width, focused, onSelectedFile }: Props) {
                     {dir ? <Text color="gray"> {dir}</Text> : null}
                   </Text>
                 </Box>
-                <Text color="gray"> {STATUS_SYMBOLS[file.status]}</Text>
+                <Box flexShrink={0} marginLeft={1}>
+                  <Text color="gray">{STATUS_SYMBOLS[file.status]}</Text>
+                </Box>
               </Box>
             );
           })}
