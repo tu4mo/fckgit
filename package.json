@@ -12,7 +12,7 @@
   "author": "tu4mo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tu4mo/fckgit.git"
+    "url": "git+https://github.com/tu4mo/fckgit.git"
   },
   "bin": {
     "fckgit": "dist/app.js"
