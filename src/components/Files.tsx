@@ -3,12 +3,18 @@ import { ScrollList } from "ink-scroll-list";
 import { useEffect, useState, type ComponentProps } from "react";
 
 import { useRepository } from "../hooks/useRepository.js";
-import { type ChangedFile, type GitFileStatus } from "../lib/git/index.js";
+import { type ChangedFile, type GitFileStatus, type StagedStatus } from "../lib/git/index.js";
 
 type Props = {
   focused: boolean;
   onSelectedFile: (file: ChangedFile | undefined) => void;
   width: ComponentProps<typeof Box>["width"];
+};
+
+const CIRCLE_COLOR: Record<StagedStatus, string> = {
+  NONE: "gray",
+  PARTIAL: "yellow",
+  FULL: "green",
 };
 
 const STATUS_SYMBOLS: Record<GitFileStatus, string> = {
@@ -35,7 +41,7 @@ export function Files({ width, focused, onSelectedFile }: Props) {
       if (input === " ") {
         const file = files[selectedIndex];
         if (!file) return;
-        if (file.staged) {
+        if (file.stagedStatus === "FULL") {
           unstage(file.path);
         } else {
           stage(file.path);
@@ -66,7 +72,9 @@ export function Files({ width, focused, onSelectedFile }: Props) {
                 paddingX={1}
                 height={1}
               >
-                <Text color={file.staged ? "green" : "gray"}>{file.staged ? "●" : "○"} </Text>
+                <Text color={CIRCLE_COLOR[file.stagedStatus]}>
+                  {file.stagedStatus === "NONE" ? "○" : "●"}{" "}
+                </Text>
                 <Box flexGrow={1} overflow="hidden">
                   <Text wrap="hard">
                     <Text>{name}</Text>

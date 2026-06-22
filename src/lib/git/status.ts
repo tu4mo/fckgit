@@ -4,11 +4,13 @@ import { git, repoRoot } from "./git.js";
 
 export type GitFileStatus = "MODIFIED" | "ADDED" | "DELETED" | "RENAMED" | "UNTRACKED" | "-";
 
+export type StagedStatus = "NONE" | "PARTIAL" | "FULL";
+
 export type ChangedFile = {
   path: string;
   displayPath: string;
   status: GitFileStatus;
-  staged: boolean;
+  stagedStatus: StagedStatus;
 };
 
 const STATUS_MAP: Record<string, GitFileStatus> = {
@@ -26,16 +28,22 @@ export function getStatus(): ChangedFile[] {
     if (!output) return [];
 
     return output.split("\n").map((line) => {
-      const indexChar = line[0];
-      const wtChar = line[1];
-      const staged = indexChar !== " " && indexChar !== "?";
-      const code = wtChar === "?" ? "?" : staged ? indexChar : wtChar;
+      const [indexChar, wtChar] = line;
+      const isIndexChanged = indexChar !== " " && indexChar !== "?";
+      const isWtChanged = wtChar !== " " && wtChar !== "?";
+      const stagedStatus: StagedStatus = !isIndexChanged
+        ? "NONE"
+        : isWtChanged
+          ? "PARTIAL"
+          : "FULL";
+      const code = wtChar === "?" ? "?" : isIndexChanged ? indexChar : wtChar;
       const filePath = line.slice(3);
+
       return {
         path: filePath,
         displayPath: path.relative(process.cwd(), path.join(repoRoot, filePath)),
         status: STATUS_MAP[code ?? ""] ?? "-",
-        staged,
+        stagedStatus,
       };
     });
   } catch {

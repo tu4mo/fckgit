@@ -31,7 +31,7 @@ export function Diff({ file, focused, width }: Props) {
       scrollRef.current?.scrollToTop();
       return;
     }
-    const diff = getDiff(file.path, file.staged, file.status === "UNTRACKED");
+    const diff = getDiff(file.path, file.stagedStatus !== "NONE", file.status === "UNTRACKED");
     const parsed = parseDiff(diff);
     setLines(parsed);
     if (prevFileRef.current !== file.path) {
