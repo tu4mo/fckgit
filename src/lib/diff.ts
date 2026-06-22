@@ -38,16 +38,24 @@ export function parseDiff({ raw, staged }: { raw: string; staged: boolean }): Di
 export function getFileDiffLines(file: ChangedFile): DiffLine[] {
   if (file.stagedStatus === "PARTIAL") {
     const parse = (staged: boolean) =>
-      parseDiff({ raw: getDiff({ path: file.path, staged, untracked: false }), staged });
+      parseDiff({
+        raw: getDiff({ path: file.path, mode: staged ? "staged" : "unstaged" }),
+        staged,
+      });
+
     const stagedLines = parse(true);
     const unstagedLines = parse(false);
     const divider: DiffLine = { kind: "separator", text: "unstaged", staged: false };
+
     return [
       ...stagedLines,
       ...(stagedLines.length && unstagedLines.length ? [divider] : []),
       ...unstagedLines,
     ];
   }
+
   const staged = file.stagedStatus !== "NONE";
-  return parseDiff({ raw: getDiff({ path: file.path, staged, untracked: file.status === "UNTRACKED" }), staged });
+  const mode = file.status === "UNTRACKED" ? "untracked" : staged ? "staged" : "unstaged";
+
+  return parseDiff({ raw: getDiff({ path: file.path, mode }), staged });
 }

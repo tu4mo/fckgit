@@ -1,15 +1,13 @@
 import { gitAllowFailure } from "./git.js";
 
-export function getDiff({
-  path,
-  staged,
-  untracked,
-}: {
-  path: string;
-  staged: boolean;
-  untracked: boolean;
-}): string {
-  if (untracked) return gitAllowFailure("diff", "--no-index", "/dev/null", path);
-  // git diff exits 1 when differences are found (not an error), so use gitAllowFailure
-  return staged ? gitAllowFailure("diff", "--cached", path) : gitAllowFailure("diff", path);
+export type DiffMode = "staged" | "unstaged" | "untracked";
+
+export function getDiff({ path, mode }: { path: string; mode: DiffMode }): string {
+  if (mode === "untracked") {
+    return gitAllowFailure("diff", "--no-index", "/dev/null", path);
+  }
+
+  return mode === "staged"
+    ? gitAllowFailure("diff", "--cached", path)
+    : gitAllowFailure("diff", path);
 }
