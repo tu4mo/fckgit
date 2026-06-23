@@ -19,13 +19,13 @@ const CIRCLE_COLOR: Record<StagedStatus, string> = {
   FULL: "green",
 };
 
-const STATUS_SYMBOLS: Record<GitFileStatus, string> = {
-  "MODIFIED": "ᵐ",
-  "ADDED": "ᵃ",
-  "DELETED": "ᵈ",
-  "RENAMED": "ʳ",
-  "UNTRACKED": "ᵘ",
-  "-": "⁻",
+const STATUS: Record<GitFileStatus, { symbol: string; color: string }> = {
+  "MODIFIED": { symbol: "ᵐ", color: "yellow" },
+  "ADDED": { symbol: "ᵃ", color: "green" },
+  "DELETED": { symbol: "ᵈ", color: "red" },
+  "RENAMED": { symbol: "ʳ", color: "cyan" },
+  "UNTRACKED": { symbol: "ᵘ", color: "gray" },
+  "-": { symbol: "⁻", color: "gray" },
 };
 
 export function Files({ width, focused, onSelectedFile }: Props) {
@@ -90,7 +90,7 @@ export function Files({ width, focused, onSelectedFile }: Props) {
                   </Text>
                 </Box>
                 <Box flexShrink={0} marginLeft={1}>
-                  <Text color="gray">{STATUS_SYMBOLS[file.status]}</Text>
+                  <Text color={STATUS[file.status].color}>{STATUS[file.status].symbol}</Text>
                 </Box>
               </Box>
             );
