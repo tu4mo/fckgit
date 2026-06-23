@@ -7,7 +7,9 @@ function sortFiles(files: ChangedFile[]): ChangedFile[] {
   return files.slice().sort((a, b) => {
     const aDir = a.path.split("/").slice(0, -1).join("/");
     const bDir = b.path.split("/").slice(0, -1).join("/");
-    if (aDir !== bDir) return aDir.localeCompare(bDir);
+    if (aDir !== bDir) {
+      return aDir.localeCompare(bDir);
+    }
     return a.path.localeCompare(b.path);
   });
 }

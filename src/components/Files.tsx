@@ -38,11 +38,17 @@ export function Files({ width, focused, onSelectedFile }: Props) {
 
   useInput(
     (input, key) => {
-      if (key.upArrow) setSelectedIndex((i) => Math.max(0, i - 1));
-      if (key.downArrow) setSelectedIndex((i) => Math.min(files.length - 1, i + 1));
+      if (key.upArrow) {
+        setSelectedIndex((i) => Math.max(0, i - 1));
+      }
+      if (key.downArrow) {
+        setSelectedIndex((i) => Math.min(files.length - 1, i + 1));
+      }
       if (input === " ") {
         const file = files[selectedIndex];
-        if (!file) return;
+        if (!file) {
+          return;
+        }
         if (file.stagedStatus === "FULL") {
           unstage(file.path);
         } else {
@@ -64,7 +70,8 @@ export function Files({ width, focused, onSelectedFile }: Props) {
         <ScrollList height="100%" selectedIndex={selectedIndex} width="100%">
           {files.map((file, i) => {
             const name = path.basename(file.displayPath);
-            const dir = path.dirname(file.displayPath) === "." ? "" : path.dirname(file.displayPath);
+            const dir =
+              path.dirname(file.displayPath) === "." ? "" : path.dirname(file.displayPath);
 
             return (
               <Box

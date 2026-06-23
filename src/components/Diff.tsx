@@ -13,8 +13,12 @@ type Props = {
 };
 
 function lineBg(line: DiffLine): string | undefined {
-  if (line.kind === "add") return "#052e16";
-  if (line.kind === "remove") return "#450a0a";
+  if (line.kind === "add") {
+    return "#052e16";
+  }
+  if (line.kind === "remove") {
+    return "#450a0a";
+  }
   return undefined;
 }
 
@@ -52,12 +56,24 @@ export function Diff({ file, focused, width }: Props) {
   useInput(
     (input, key) => {
       const maxHorizontal = Math.max(0, maxLineLength - measuredWidth);
-      if (key.upArrow) scrollRef.current?.scrollBy(-1);
-      if (key.downArrow) scrollRef.current?.scrollBy(1);
-      if (key.leftArrow) setHorizontalOffset((s) => Math.max(0, s - 1));
-      if (key.rightArrow) setHorizontalOffset((s) => Math.min(maxHorizontal, s + 1));
-      if (input === "+") setContextLines((s) => s + 1);
-      if (input === "-") setContextLines((s) => Math.max(0, s - 1));
+      if (key.upArrow) {
+        scrollRef.current?.scrollBy(-1);
+      }
+      if (key.downArrow) {
+        scrollRef.current?.scrollBy(1);
+      }
+      if (key.leftArrow) {
+        setHorizontalOffset((s) => Math.max(0, s - 1));
+      }
+      if (key.rightArrow) {
+        setHorizontalOffset((s) => Math.min(maxHorizontal, s + 1));
+      }
+      if (input === "+") {
+        setContextLines((s) => s + 1);
+      }
+      if (input === "-") {
+        setContextLines((s) => Math.max(0, s - 1));
+      }
     },
     { isActive: focused },
   );

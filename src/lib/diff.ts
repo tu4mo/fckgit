@@ -7,11 +7,15 @@ export type DiffLine = {
 };
 
 export function parseDiff({ raw, staged }: { raw: string; staged: boolean }): DiffLine[] {
-  if (!raw) return [];
+  if (!raw) {
+    return [];
+  }
 
   const lines = raw.split("\n");
   const hunkStart = lines.findIndex((l) => l.startsWith("@@"));
-  if (hunkStart === -1) return [];
+  if (hunkStart === -1) {
+    return [];
+  }
 
   let firstHunk = true;
   return lines.slice(hunkStart).flatMap((line): DiffLine[] => {

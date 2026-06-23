@@ -15,8 +15,12 @@ function App() {
   const [selectedFile, setSelectedFile] = useState<ChangedFile | undefined>(undefined);
 
   useInput((input, key) => {
-    if (input === "q" || (key.ctrl && input === "c")) exit();
-    if (key.tab) setFocusedPane((p) => (p === "files" ? "diff" : "files"));
+    if (input === "q" || (key.ctrl && input === "c")) {
+      exit();
+    }
+    if (key.tab) {
+      setFocusedPane((p) => (p === "files" ? "diff" : "files"));
+    }
   });
 
   return (

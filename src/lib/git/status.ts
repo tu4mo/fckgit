@@ -25,7 +25,9 @@ export function getStatus(): ChangedFile[] {
   try {
     const output = git("status", "--porcelain", "--untracked-files=all");
 
-    if (!output) return [];
+    if (!output) {
+      return [];
+    }
 
     return output.split("\n").map((line) => {
       const [indexStatusChar, workingTreeStatusChar] = line;

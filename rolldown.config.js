@@ -14,11 +14,14 @@ export default defineConfig({
     {
       name: "stub-react-devtools-core",
       resolveId(id) {
-        if (id === "react-devtools-core") return { id, external: false, moduleSideEffects: false };
+        if (id === "react-devtools-core") {
+          return { id, external: false, moduleSideEffects: false };
+        }
       },
       load(id) {
-        if (id === "react-devtools-core")
+        if (id === "react-devtools-core") {
           return "export default { initialize() {}, connectToDevTools() {} }";
+        }
       },
     },
   ],
