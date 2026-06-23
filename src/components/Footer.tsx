@@ -29,9 +29,9 @@ type Props = {
 
 export function Footer({ focusedPane }: Props) {
   return (
-    <Box gap={2} paddingX={1}>
+    <Box gap={2} paddingX={1} height={1} overflow="hidden">
       {COMMANDS[focusedPane].map(({ key, label }) => (
-        <Box key={key} gap={1}>
+        <Box key={key} gap={1} flexShrink={0}>
           <Text bold color="white">
             {key}
           </Text>
