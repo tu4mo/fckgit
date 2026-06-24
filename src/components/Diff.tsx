@@ -4,8 +4,8 @@ import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react
 
 import { type DiffFile, getFileDiff } from "../lib/diff.js";
 import { readFile } from "../lib/fs.js";
-import { show } from "../lib/git/index.js";
-import { type ChangedFile } from "../lib/git/index.js";
+import { show } from "../lib/git/show.js";
+import { type ChangedFile } from "../lib/git/status.js";
 import { TimedHint } from "./TimedHint.js";
 
 type Props = {

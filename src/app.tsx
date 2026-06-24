@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Diff } from "./components/Diff.js";
 import { Files } from "./components/Files.js";
 import { Footer } from "./components/Footer.js";
-import { type ChangedFile } from "./lib/git/index.js";
+import { type ChangedFile } from "./lib/git/status.js";
 import { type Pane } from "./types.js";
 
 function App() {

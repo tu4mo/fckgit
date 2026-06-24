@@ -5,7 +5,7 @@ import { ScrollList } from "ink-scroll-list";
 import { useEffect, useMemo, useState, type ComponentProps } from "react";
 
 import { useRepository } from "../hooks/useRepository.js";
-import { type ChangedFile, type GitFileStatus, type StagedStatus } from "../lib/git/index.js";
+import { type ChangedFile, type GitFileStatus, type StagedStatus } from "../lib/git/status.js";
 
 type Props = {
   focused: boolean;

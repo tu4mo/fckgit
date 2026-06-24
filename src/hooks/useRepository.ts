@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { getBranch } from "../lib/git/branch.js";
-import { type ChangedFile, getStatus, stageFile, unstageFile } from "../lib/git/index.js";
+import { type ChangedFile, getStatus } from "../lib/git/status.js";
+import { stageFile } from "../lib/git/add.js";
+import { unstageFile } from "../lib/git/restore.js";
 
 function sortFiles(files: ChangedFile[]): ChangedFile[] {
   return files.slice().sort((a, b) => {
