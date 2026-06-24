@@ -31,7 +31,7 @@ function DiffFilesView({ files, horizontalOffset, width }: DiffFilesViewProps) {
 
       if (ci > 0 || fi > 0) {
         items.push(
-          <Box key={`sep-${fi}-${ci}`} width="100%" backgroundColor="gray" justifyContent="center">
+          <Box key={`sep-${fi}-${ci}`} backgroundColor="gray" justifyContent="center">
             <Text color="white">···</Text>
           </Box>,
         );
