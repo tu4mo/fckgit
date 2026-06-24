@@ -42,11 +42,10 @@ function DiffFilesView({ files, horizontalOffset, width }: DiffFilesViewProps) {
           change.type === "add" ? "#052e16" : change.type === "del" ? "#450a0a" : undefined;
         const content =
           change.content.slice(1 + horizontalOffset, 1 + horizontalOffset + width - 2) || " ";
+
         items.push(
-          <Box key={`${fi}-${ci}-${i}`} width="100%" backgroundColor={bg}>
-            <Text wrap="hard" color="white">
-              {content}
-            </Text>
+          <Box key={`${fi}-${ci}-${i}`} width={width} backgroundColor={bg}>
+            <Text color="white">{content}</Text>
           </Box>,
         );
       });
