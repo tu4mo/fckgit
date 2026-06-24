@@ -156,11 +156,9 @@ export function Diff({ file, focused, width }: Props) {
       >
         {view.mode === "content" ? (
           view.lines.map((line, i) => (
-            <Box key={i} width="100%">
-              <Text wrap="hard" color="white">
-                {line.slice(horizontalOffset, horizontalOffset + measuredWidth - 2) || " "}
-              </Text>
-            </Box>
+            <Text wrap="hard" color="whiteBright" key={i}>
+              {line.slice(horizontalOffset, horizontalOffset + measuredWidth - 2) || " "}
+            </Text>
           ))
         ) : (
           <>
