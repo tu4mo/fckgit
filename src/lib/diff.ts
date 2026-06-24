@@ -1,4 +1,4 @@
-import { getDiff, type ChangedFile } from "./git/index.js";
+import { getDiff, show, type ChangedFile } from "./git/index.js";
 
 export type DiffLine = {
   kind: "add" | "remove" | "context" | "separator";
@@ -39,6 +39,14 @@ export function parseDiff({ raw, staged }: { raw: string; staged: boolean }): Di
   });
 }
 
+function deletedFileLines(path: string, staged: boolean): DiffLine[] {
+  const content = show(staged ? `HEAD:${path}` : `:${path}`);
+  if (!content) {
+    return [];
+  }
+  return content.split("\n").map((text) => ({ kind: "remove", text, staged }));
+}
+
 export function getFileDiffLines(file: ChangedFile, contextLines = 3): DiffLine[] {
   if (file.stagedStatus === "PARTIAL") {
     const parse = (staged: boolean) =>
@@ -59,6 +67,11 @@ export function getFileDiffLines(file: ChangedFile, contextLines = 3): DiffLine[
   }
 
   const staged = file.stagedStatus !== "NONE";
+
+  if (file.status === "DELETED") {
+    return deletedFileLines(file.path, staged);
+  }
+
   const mode = file.status === "UNTRACKED" ? "untracked" : staged ? "staged" : "unstaged";
 
   return parseDiff({ raw: getDiff({ path: file.path, mode, contextLines }), staged });
