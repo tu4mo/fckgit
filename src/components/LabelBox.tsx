@@ -12,8 +12,8 @@ export function LabelBox({ children, focused, label, ...props }: Props) {
       <Box borderStyle="round" borderColor={focused ? "white" : "gray"}>
         {children}
       </Box>
-      <Box backgroundColor="black" left={2} position="absolute">
-        {label}
+      <Box left={2} right={2} position="absolute">
+        <Box backgroundColor="black">{label}</Box>
       </Box>
     </Box>
   );
