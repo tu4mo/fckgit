@@ -141,7 +141,7 @@ export function Diff({ file, focused, width }: Props) {
       label={
         <Box gap={1}>
           <Text bold color={focused ? "whiteBright" : "gray"} wrap="truncate-middle">
-            {file ? file.displayPath : "no file selected"}
+            {file && file.displayPath}
           </Text>
           {view.mode === "diff" && (
             <TimedHint watchValue={contextLines}>
