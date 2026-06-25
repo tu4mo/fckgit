@@ -6,6 +6,7 @@ import { type DiffFile, getFileDiff } from "../lib/diff.js";
 import { readFile } from "../lib/fs.js";
 import { show } from "../lib/git/show.js";
 import { type ChangedFile } from "../lib/git/status.js";
+import { LabelBox } from "./LabelBox.js";
 import { TimedHint } from "./TimedHint.js";
 
 type Props = {
@@ -135,24 +136,24 @@ export function Diff({ file, focused, width }: Props) {
   );
 
   return (
-    <Box flexDirection="column" width={width} ref={ref}>
-      <Box marginX={1} gap={1} justifyContent="space-between">
-        <Text bold color={focused ? "whiteBright" : "gray"} wrap="truncate-middle">
-          {file ? file.displayPath : "no file selected"}
-        </Text>
-        {view.mode === "diff" && (
-          <TimedHint watchValue={contextLines}>
-            <Text color="gray">{contextLines} lines</Text>
-          </TimedHint>
-        )}
-      </Box>
-      <ScrollView
-        borderColor={focused ? "white" : "gray"}
-        borderStyle="round"
-        flexGrow={1}
-        height={measuredHeight}
-        ref={scrollRef}
-      >
+    <LabelBox
+      flexGrow={1}
+      label={
+        <Box gap={1}>
+          <Text bold color={focused ? "whiteBright" : "gray"} wrap="truncate-middle">
+            {file ? file.displayPath : "no file selected"}
+          </Text>
+          {view.mode === "diff" && (
+            <TimedHint watchValue={contextLines}>
+              <Text color="gray">{contextLines} lines</Text>
+            </TimedHint>
+          )}
+        </Box>
+      }
+      ref={ref}
+      width={width}
+    >
+      <ScrollView height={measuredHeight - 2} ref={scrollRef}>
         {view.mode === "content" ? (
           view.lines.map((line, i) => (
             <Text wrap="hard" color="whiteBright" key={i}>
@@ -179,6 +180,6 @@ export function Diff({ file, focused, width }: Props) {
           </>
         )}
       </ScrollView>
-    </Box>
+    </LabelBox>
   );
 }
