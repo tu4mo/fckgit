@@ -2,12 +2,12 @@ import { Box, Text, useBoxMetrics, useInput } from "ink";
 import { ScrollView, type ScrollViewRef } from "ink-scroll-view";
 import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
 
+import { useNotification } from "../hooks/useNotification.js";
 import { type DiffFile, getFileDiff } from "../lib/diff.js";
 import { readFile } from "../lib/fs.js";
 import { show } from "../lib/git/show.js";
 import { type ChangedFile } from "../lib/git/status.js";
 import { LabelBox } from "./LabelBox.js";
-import { TimedHint } from "./TimedHint.js";
 
 type Props = {
   file: ChangedFile | undefined;
@@ -62,6 +62,7 @@ export function Diff({ file, focused, width }: Props) {
   const [view, setView] = useState<ViewState>({ mode: "diff", staged: [], unstaged: [] });
   const [horizontalOffset, setHorizontalOffset] = useState(0);
   const [contextLines, setContextLines] = useState(DEFAULT_CONTEXT_LINES);
+  const { addNotification } = useNotification();
   const scrollRef = useRef<ScrollViewRef>(null);
   const prevFileRef = useRef<string | undefined>(undefined);
   const ref = useRef(null);
@@ -126,10 +127,18 @@ export function Diff({ file, focused, width }: Props) {
         setHorizontalOffset((s) => Math.min(maxHorizontal, s + 1));
       }
       if (input === "+" && view.mode === "diff") {
-        setContextLines((s) => s + 1);
+        setContextLines((s) => {
+          const next = s + 1;
+          addNotification(`${next} context lines`);
+          return next;
+        });
       }
       if (input === "-" && view.mode === "diff") {
-        setContextLines((s) => Math.max(0, s - 1));
+        setContextLines((s) => {
+          const next = Math.max(0, s - 1);
+          addNotification(`${next} context lines`);
+          return next;
+        });
       }
     },
     { isActive: focused },
@@ -140,16 +149,9 @@ export function Diff({ file, focused, width }: Props) {
       flexGrow={1}
       focused={focused}
       label={
-        <Box gap={1}>
-          <Text bold color={focused ? "whiteBright" : "gray"} wrap="truncate-middle">
-            {file && file.displayPath}
-          </Text>
-          {view.mode === "diff" && (
-            <TimedHint watchValue={contextLines}>
-              <Text color="gray">{contextLines} lines</Text>
-            </TimedHint>
-          )}
-        </Box>
+        <Text bold color={focused ? "whiteBright" : "gray"} wrap="truncate-middle">
+          {file && file.displayPath}
+        </Text>
       }
       ref={ref}
       width={width}
