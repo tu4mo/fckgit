@@ -1,11 +1,13 @@
 import path from "node:path";
 
-import { Box, Text, useInput } from "ink";
+import { Box, Text, useBoxMetrics, useInput } from "ink";
 import { ScrollList } from "ink-scroll-list";
-import { useEffect, useMemo, useState, type ComponentProps } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
 
 import { useRepository } from "../hooks/useRepository.js";
 import { type ChangedFile, type GitFileStatus, type StagedStatus } from "../lib/git/status.js";
+import { truncateMiddle } from "../lib/truncateMiddle.js";
+import { LabelBox } from "./LabelBox.js";
 
 type Props = {
   focused: boolean;
@@ -32,6 +34,8 @@ export function Files({ width, focused, onSelectedFile }: Props) {
   const { files, branch, stage, unstage } = useRepository();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const repo = useMemo(() => process.cwd().split("/").pop(), []);
+  const labelBoxRef = useRef(null);
+  const { width: labelBoxWidth, hasMeasured } = useBoxMetrics(labelBoxRef);
 
   useEffect(() => {
     onSelectedFile(files[selectedIndex]);
@@ -60,24 +64,34 @@ export function Files({ width, focused, onSelectedFile }: Props) {
     { isActive: focused },
   );
 
+  const availableWidth =
+    labelBoxWidth -
+    2 - // padding
+    2 - // border
+    2 - // margin
+    3; // repo symbol and space;
+
+  const truncatedRepo = truncateMiddle(repo, Math.floor(availableWidth / 2));
+  const truncatedBranch = truncateMiddle(branch, Math.floor(availableWidth / 2));
+
   return (
     <Box flexDirection="column" width={width}>
-      <Box marginX={1} overflow="hidden" gap={1}>
-        <Box overflow="hidden" minWidth={3}>
-          <Text bold color={focused ? "whiteBright" : "gray"} wrap="truncate-middle">
-            {repo}
-          </Text>
-        </Box>
-        <Box flexShrink={0}>
-          <Text color="gray">⌥</Text>
-        </Box>
-        <Box overflow="hidden" minWidth={3}>
-          <Text color={focused ? "whiteBright" : "gray"} wrap="truncate-middle">
-            {branch}
-          </Text>
-        </Box>
-      </Box>
-      <Box borderColor={focused ? "white" : "gray"} borderStyle="round" flexGrow={1}>
+      <LabelBox
+        flexGrow={1}
+        focused={focused}
+        label={
+          hasMeasured && (
+            <Box gap={1} height={1}>
+              <Text bold color={focused ? "whiteBright" : "gray"}>
+                {truncatedRepo}
+              </Text>
+              <Text color="gray">⌥</Text>
+              <Text color={focused ? "whiteBright" : "gray"}>{truncatedBranch}</Text>
+            </Box>
+          )
+        }
+        ref={labelBoxRef}
+      >
         <ScrollList height="100%" selectedIndex={selectedIndex} width="100%">
           {files.map((file, i) => {
             const selected = i === selectedIndex;
@@ -108,7 +122,7 @@ export function Files({ width, focused, onSelectedFile }: Props) {
             );
           })}
         </ScrollList>
-      </Box>
+      </LabelBox>
     </Box>
   );
 }
