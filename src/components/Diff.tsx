@@ -1,12 +1,14 @@
 import { Box, Text, useBoxMetrics, useInput } from "ink";
 import { ScrollView, type ScrollViewRef } from "ink-scroll-view";
 import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
+import type { BundledLanguage } from "shiki";
 
 import { useNotification } from "../hooks/useNotification.js";
 import { type DiffFile, getFileDiff } from "../lib/diff.js";
 import { readFile } from "../lib/fs.js";
 import { show } from "../lib/git/show.js";
 import { type ChangedFile } from "../lib/git/status.js";
+import { CodeLine, getLanguage } from "./CodeLine.js";
 import { LabelBox } from "./LabelBox.js";
 
 type Props = {
@@ -22,10 +24,11 @@ type ViewState =
 type DiffFilesViewProps = {
   files: DiffFile[];
   horizontalOffset: number;
+  language: BundledLanguage | null;
   width: number;
 };
 
-function DiffFilesView({ files, horizontalOffset, width }: DiffFilesViewProps) {
+function DiffFilesView({ files, horizontalOffset, language, width }: DiffFilesViewProps) {
   return files.flatMap((file, fi) =>
     file.chunks.flatMap((chunk, ci) => {
       const items: React.ReactNode[] = [];
@@ -41,12 +44,15 @@ function DiffFilesView({ files, horizontalOffset, width }: DiffFilesViewProps) {
       chunk.changes.forEach((change, i) => {
         const bg =
           change.type === "add" ? "#052e16" : change.type === "del" ? "#450a0a" : undefined;
-        const content =
-          change.content.slice(1 + horizontalOffset, 1 + horizontalOffset + width - 2) || " ";
 
         items.push(
           <Box key={`${fi}-${ci}-${i}`} width={width} backgroundColor={bg}>
-            <Text color="white">{content}</Text>
+            <CodeLine
+              content={change.content.slice(1)}
+              displayWidth={width - 2}
+              horizontalOffset={horizontalOffset}
+              language={language}
+            />
           </Box>,
         );
       });
@@ -59,6 +65,7 @@ function DiffFilesView({ files, horizontalOffset, width }: DiffFilesViewProps) {
 const DEFAULT_CONTEXT_LINES = 3;
 
 export function Diff({ file, focused, width }: Props) {
+  const language = useMemo(() => (file ? getLanguage(file.path) : null), [file]);
   const [view, setView] = useState<ViewState>({ mode: "diff", staged: [], unstaged: [] });
   const [horizontalOffset, setHorizontalOffset] = useState(0);
   const [contextLines, setContextLines] = useState(DEFAULT_CONTEXT_LINES);
@@ -159,15 +166,20 @@ export function Diff({ file, focused, width }: Props) {
       <ScrollView height={measuredHeight - 2} ref={scrollRef}>
         {view.mode === "content" ? (
           view.lines.map((line, i) => (
-            <Text wrap="hard" color="whiteBright" key={i}>
-              {line.slice(horizontalOffset, horizontalOffset + measuredWidth - 2) || " "}
-            </Text>
+            <CodeLine
+              key={i}
+              content={line}
+              displayWidth={measuredWidth - 2}
+              horizontalOffset={horizontalOffset}
+              language={language}
+            />
           ))
         ) : (
           <>
             <DiffFilesView
               files={view.staged}
               horizontalOffset={horizontalOffset}
+              language={language}
               width={measuredWidth}
             />
             {view.staged.length > 0 && view.unstaged.length > 0 && (
@@ -178,6 +190,7 @@ export function Diff({ file, focused, width }: Props) {
             <DiffFilesView
               files={view.unstaged}
               horizontalOffset={horizontalOffset}
+              language={language}
               width={measuredWidth}
             />
           </>
