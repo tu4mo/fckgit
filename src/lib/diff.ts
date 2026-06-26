@@ -5,35 +5,8 @@ import { getDiff } from "./git/diff.js";
 import { show } from "./git/show.js";
 import type { ChangedFile } from "./git/status.js";
 
-export type DiffFile = ReturnType<typeof parseDiff>[number];
-export type DiffChange = DiffFile["chunks"][number]["changes"][number];
-
-export type ViewState =
-  | { mode: "diff"; staged: DiffFile[]; unstaged: DiffFile[] }
-  | { mode: "content"; lines: string[] };
-
-export function getFileDiff(
-  file: ChangedFile,
-  contextLines = 3,
-): { staged: DiffFile[]; unstaged: DiffFile[] } {
-  if (file.stagedStatus === "PARTIAL") {
-    const stagedDiff = getDiff({ path: file.path, staged: true, contextLines });
-    const unstagedDiff = getDiff({ path: file.path, staged: false, contextLines });
-
-    return {
-      staged: parseDiff(stagedDiff),
-      unstaged: parseDiff(unstagedDiff),
-    };
-  }
-
-  const staged = file.stagedStatus !== "NONE";
-  const stagedDiff = getDiff({ path: file.path, staged, contextLines });
-
-  return {
-    staged: parseDiff(stagedDiff),
-    unstaged: [],
-  };
-}
+export type Change = { type: "add" | "del" | "normal"; content: string };
+export type Chunk = { changes: Change[] };
 
 function readFileContent(file: ChangedFile): string {
   try {
@@ -45,28 +18,45 @@ function readFileContent(file: ChangedFile): string {
   }
 }
 
-export function buildViewState(file: ChangedFile | undefined, contextLines: number): ViewState {
+export function buildChunks(
+  file: ChangedFile | undefined,
+  contextLines: number,
+  staged: boolean,
+): Chunk[] {
   if (!file) {
-    return { mode: "diff", staged: [], unstaged: [] };
+    return [];
   }
 
   if (file.status === "DELETED" || file.status === "UNTRACKED") {
+    if (staged) {
+      return [];
+    }
+
     const text = readFileContent(file);
-    return { mode: "content", lines: text ? text.split("\n") : [] };
+    const lines = text.split("\n");
+    const changeType = file.status === "DELETED" ? ("del" as const) : ("add" as const);
+
+    return [{ changes: lines.map((line) => ({ type: changeType, content: line })) }];
   }
 
-  const { staged, unstaged } = getFileDiff(file, contextLines);
-  return { mode: "diff", staged, unstaged };
+  const diff = getDiff({ path: file.path, staged, contextLines });
+  const parsed = parseDiff(diff)[0];
+  if (!parsed) {
+    return [];
+  }
+  return parsed.chunks.map((chunk) => ({
+    changes: chunk.changes.map((ch) => ({ type: ch.type, content: ch.content.slice(1) })),
+  }));
 }
 
-export function getMaxLineLength(view: ViewState): number {
-  if (view.mode === "content") {
-    return Math.max(0, ...view.lines.map((l) => l.length));
-  }
+export function getPanelVisibility(file: ChangedFile | undefined) {
+  const isContentMode = file?.status === "DELETED" || file?.status === "UNTRACKED";
+  const hasStagedPanel =
+    !isContentMode && (file?.stagedStatus === "FULL" || file?.stagedStatus === "PARTIAL");
+  const hasUnstagedPanel = isContentMode || file?.stagedStatus !== "FULL";
+  return { isContentMode, hasStagedPanel, hasUnstagedPanel };
+}
 
-  const allChanges = [
-    ...view.staged.flatMap((f) => f.chunks.flatMap((c) => c.changes)),
-    ...view.unstaged.flatMap((f) => f.chunks.flatMap((c) => c.changes)),
-  ];
-  return Math.max(0, ...allChanges.map((c) => c.content.length - 1));
+export function getMaxLineLength(chunks: Chunk[]): number {
+  return Math.max(0, ...chunks.flatMap((c) => c.changes.map((ch) => ch.content.length)));
 }

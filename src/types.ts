@@ -1,1 +1,1 @@
-export type Pane = "files" | "diff";
+export type Pane = "files" | "diff-unstaged" | "diff-staged";

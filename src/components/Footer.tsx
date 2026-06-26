@@ -9,13 +9,19 @@ type Command = {
 };
 
 const COMMANDS: Record<Pane, Command[]> = {
-  files: [
+  "files": [
     { key: "space", label: "stage/unstage" },
     { key: "tab", label: "switch pane" },
     { key: "q", label: "quit" },
   ],
-  diff: [
-    { key: "space", label: "stage/unstage" },
+  "diff-unstaged": [
+    { key: "space", label: "stage" },
+    { key: "+/-", label: "context" },
+    { key: "tab", label: "switch pane" },
+    { key: "q", label: "quit" },
+  ],
+  "diff-staged": [
+    { key: "space", label: "unstage" },
     { key: "+/-", label: "context" },
     { key: "tab", label: "switch pane" },
     { key: "q", label: "quit" },
