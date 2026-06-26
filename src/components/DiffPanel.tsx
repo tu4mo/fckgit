@@ -70,36 +70,31 @@ export function DiffPanel({ file, staged, focused, contextLines, label, language
     { isActive: focused },
   );
 
-  let lineIndex = 0;
-
-  const lines = chunks.flatMap((chunk, ci) => {
-    const items: ReactNode[] = [];
-
-    if (ci > 0) {
-      items.push(<Separator key={`sep-${ci}`}>···</Separator>);
-    }
-
-    chunk.changes.forEach((change, i) => {
-      const text = highlightedLines?.[lineIndex++] ?? change.content;
-
-      items.push(
-        <CodeLine
-          key={`${ci}-${i}`}
-          displayWidth={measuredWidth - 2}
-          horizontalOffset={horizontalOffset}
-          text={text}
-          type={change.type}
-        />,
-      );
-    });
-
-    return items;
-  });
-
   return (
     <LabelBox flexBasis={0} flexGrow={1} focused={focused} label={label} ref={ref}>
       <ScrollView height={measuredHeight - 2} ref={scrollRef}>
-        {lines}
+        {chunks.flatMap((chunk, ci) => {
+          const chunkOffset = chunks.slice(0, ci).reduce((sum, c) => sum + c.changes.length, 0);
+          const items: ReactNode[] = [];
+
+          if (ci > 0) {
+            items.push(<Separator key={`sep-${ci}`}>···</Separator>);
+          }
+
+          chunk.changes.forEach((change, i) => {
+            items.push(
+              <CodeLine
+                key={`${ci}-${i}`}
+                displayWidth={measuredWidth - 2}
+                horizontalOffset={horizontalOffset}
+                text={highlightedLines?.[chunkOffset + i] ?? change.content}
+                type={change.type}
+              />,
+            );
+          });
+
+          return items;
+        })}
       </ScrollView>
     </LabelBox>
   );
