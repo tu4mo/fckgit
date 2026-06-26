@@ -10,12 +10,3 @@ A fullscreen terminal UI for reviewing and staging Git changes — built to run 
 npm install -g fckgit
 fckgit
 ```
-
-## Keybindings
-
-| Key            | Action                              |
-| -------------- | ----------------------------------- |
-| `↑` / `↓`      | Navigate files                      |
-| `Space`        | Stage / unstage file                |
-| `Tab`          | Switch between files and diff panes |
-| `q` / `Ctrl+C` | Quit                                |
