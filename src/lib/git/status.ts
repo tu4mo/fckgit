@@ -56,7 +56,12 @@ export function getStatus(): ChangedFile[] {
             ? indexStatusChar
             : workingTreeStatusChar
 
-      const filePath = line.slice(3)
+      // git quotes paths containing special characters (e.g. spaces) in porcelain output
+      const rawPath = line.slice(3)
+      const filePath =
+        rawPath.startsWith('"') && rawPath.endsWith('"')
+          ? rawPath.slice(1, -1)
+          : rawPath
 
       const workingTreeStatus: GitFileStatus =
         workingTreeStatusChar === '?'
