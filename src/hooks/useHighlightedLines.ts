@@ -15,7 +15,7 @@ export function useHighlightedLines(
       return
     }
     let cancelled = false
-    codeToANSI(joined, language, 'github-dark').then((result) => {
+    void codeToANSI(joined, language, 'github-dark').then((result) => {
       if (!cancelled) {
         setHighlighted(result.replace(/\n$/, '').split('\n'))
       }

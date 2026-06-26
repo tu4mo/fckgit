@@ -13,6 +13,9 @@
   "categories": {
     "correctness": "error"
   },
+  "options": {
+    "typeAware": true
+  },
   "rules": {
     "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     "curly": ["error", "all"]
