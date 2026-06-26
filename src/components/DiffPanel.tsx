@@ -1,4 +1,4 @@
-import { Box, useBoxMetrics, useInput } from "ink";
+import { useBoxMetrics, useInput } from "ink";
 import { ScrollView, type ScrollViewRef } from "ink-scroll-view";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { BundledLanguage } from "shiki";
@@ -80,17 +80,16 @@ export function DiffPanel({ file, staged, focused, contextLines, label, language
     }
 
     chunk.changes.forEach((change, i) => {
-      const bg = change.type === "add" ? "#052e16" : change.type === "del" ? "#450a0a" : undefined;
       const text = highlightedLines?.[lineIndex++] ?? change.content;
 
       items.push(
-        <Box key={`${ci}-${i}`} width={measuredWidth} backgroundColor={bg}>
-          <CodeLine
-            displayWidth={measuredWidth - 2}
-            horizontalOffset={horizontalOffset}
-            text={text}
-          />
-        </Box>,
+        <CodeLine
+          key={`${ci}-${i}`}
+          displayWidth={measuredWidth - 2}
+          horizontalOffset={horizontalOffset}
+          text={text}
+          type={change.type}
+        />,
       );
     });
 
