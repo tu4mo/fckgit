@@ -20,9 +20,11 @@ export function LabelBox({
         {children}
       </Box>
       <Box gap={1} left={2} right={2} position="absolute">
-        <Box backgroundColor="black" paddingX={1}>
-          {label}
-        </Box>
+        {label && (
+          <Box backgroundColor="black" paddingX={1}>
+            {label}
+          </Box>
+        )}
         {subLabel && (
           <Box flexGrow={1} flexShrink={0} justifyContent="flex-end">
             <Box backgroundColor="black" paddingX={1}>
