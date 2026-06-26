@@ -1,4 +1,4 @@
-import { Box, Text, useInput } from "ink";
+import { Box, useInput } from "ink";
 import { useEffect, useMemo, useState, type ComponentProps } from "react";
 
 import { useNotification } from "../hooks/useNotification.js";
@@ -56,15 +56,6 @@ export function Diff({ file, focusedPanel, width }: Props) {
           contextLines={contextLines}
           file={file}
           focused={focusedPanel === "unstaged"}
-          label={
-            <Text
-              bold
-              color={focusedPanel === "unstaged" ? "whiteBright" : "gray"}
-              wrap="truncate-middle"
-            >
-              {file?.displayPath}: unstaged
-            </Text>
-          }
           language={language}
           staged={false}
         />
@@ -74,15 +65,6 @@ export function Diff({ file, focusedPanel, width }: Props) {
           contextLines={contextLines}
           file={file}
           focused={focusedPanel === "staged"}
-          label={
-            <Text
-              bold
-              color={focusedPanel === "staged" ? "whiteBright" : "gray"}
-              wrap="truncate-middle"
-            >
-              {file?.displayPath}: staged
-            </Text>
-          }
           language={language}
           staged={true}
         />

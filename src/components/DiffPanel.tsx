@@ -1,4 +1,4 @@
-import { useBoxMetrics, useInput } from "ink";
+import { Text, useBoxMetrics, useInput } from "ink";
 import { ScrollView, type ScrollViewRef } from "ink-scroll-view";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { BundledLanguage } from "shiki";
@@ -16,11 +16,10 @@ type Props = {
   staged: boolean;
   focused: boolean;
   contextLines: number;
-  label: ReactNode;
   language: BundledLanguage | null;
 };
 
-export function DiffPanel({ file, staged, focused, contextLines, label, language }: Props) {
+export function DiffPanel({ file, staged, focused, contextLines, language }: Props) {
   const { stage, unstage } = useRepository();
   const [horizontalOffset, setHorizontalOffset] = useState(0);
   const scrollRef = useRef<ScrollViewRef>(null);
@@ -71,7 +70,19 @@ export function DiffPanel({ file, staged, focused, contextLines, label, language
   );
 
   return (
-    <LabelBox flexBasis={0} flexGrow={1} focused={focused} label={label} ref={ref}>
+    <LabelBox
+      flexBasis={0}
+      flexGrow={1}
+      focused={focused}
+      label={
+        file && (
+          <Text bold color={focused ? "whiteBright" : "gray"} wrap="truncate-middle">
+            {file.displayPath}: {staged ? "staged" : "unstaged"}
+          </Text>
+        )
+      }
+      ref={ref}
+    >
       <ScrollView height={measuredHeight - 2} ref={scrollRef}>
         {chunks.flatMap((chunk, ci) => {
           const chunkOffset = chunks.slice(0, ci).reduce((sum, c) => sum + c.changes.length, 0);
