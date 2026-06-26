@@ -4,10 +4,10 @@ import { Box, Text, useBoxMetrics, useInput } from "ink";
 import { ScrollList } from "ink-scroll-list";
 import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
 
-import { useRepository } from "../hooks/useRepository.js";
-import { type ChangedFile, type GitFileStatus, type StagedStatus } from "../lib/git/status.js";
-import { truncateMiddle } from "../lib/truncateMiddle.js";
-import { LabelBox } from "./LabelBox.js";
+import { LabelBox } from "../../components/LabelBox.js";
+import { useRepository } from "../../hooks/useRepository.js";
+import { type ChangedFile, type GitFileStatus, type StagedStatus } from "../../lib/git/status.js";
+import { truncateMiddle } from "../../lib/truncateMiddle.js";
 
 type Props = {
   focused: boolean;
