@@ -1,8 +1,11 @@
 import { Box } from "ink";
+import { useMemo } from "react";
 import type { ReactNode } from "react";
 import type { BundledLanguage } from "shiki";
 
 import type { DiffFile } from "../lib/diff.js";
+import { useHighlightedLines } from "../hooks/useHighlightedLines.js";
+
 import { CodeLine } from "./CodeLine.js";
 import { Separator } from "./Separator.js";
 
@@ -14,6 +17,14 @@ type Props = {
 };
 
 export function DiffFilesView({ files, horizontalOffset, language, width }: Props) {
+  const allContents = useMemo(
+    () => files.flatMap((f) => f.chunks.flatMap((c) => c.changes.map((ch) => ch.content.slice(1)))),
+    [files],
+  );
+  const highlightedLines = useHighlightedLines(allContents, language);
+
+  let lineIndex = 0;
+
   return files.flatMap((file, fi) =>
     file.chunks.flatMap((chunk, ci) => {
       const items: ReactNode[] = [];
@@ -26,13 +37,15 @@ export function DiffFilesView({ files, horizontalOffset, language, width }: Prop
         const bg =
           change.type === "add" ? "#052e16" : change.type === "del" ? "#450a0a" : undefined;
 
+        const content = change.content.slice(1);
+        const text = highlightedLines?.[lineIndex++] ?? content;
+
         items.push(
           <Box key={`${fi}-${ci}-${i}`} width={width} backgroundColor={bg}>
             <CodeLine
-              content={change.content.slice(1)}
               displayWidth={width - 2}
               horizontalOffset={horizontalOffset}
-              language={language}
+              text={text}
             />
           </Box>,
         );

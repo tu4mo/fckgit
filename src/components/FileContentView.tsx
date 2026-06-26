@@ -1,5 +1,7 @@
 import type { BundledLanguage } from "shiki";
 
+import { useHighlightedLines } from "../hooks/useHighlightedLines.js";
+
 import { CodeLine } from "./CodeLine.js";
 
 type Props = {
@@ -10,13 +12,14 @@ type Props = {
 };
 
 export function FileContentView({ horizontalOffset, language, lines, width }: Props) {
+  const highlightedLines = useHighlightedLines(lines, language);
+
   return lines.map((line, i) => (
     <CodeLine
       key={i}
-      content={line}
       displayWidth={width - 2}
       horizontalOffset={horizontalOffset}
-      language={language}
+      text={highlightedLines?.[i] ?? line}
     />
   ));
 }

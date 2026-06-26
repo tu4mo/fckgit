@@ -1,8 +1,7 @@
 import { extname } from "node:path";
 
-import { codeToANSI } from "@shikijs/cli";
 import { Text } from "ink";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import type { BundledLanguage } from "shiki";
 import sliceAnsi from "slice-ansi";
 
@@ -43,31 +42,12 @@ export function getLanguage(path: string): BundledLanguage | null {
 }
 
 type Props = {
-  content: string;
   displayWidth: number;
   horizontalOffset: number;
-  language: BundledLanguage | null;
+  text: string;
 };
 
-export function CodeLine({ content, displayWidth, horizontalOffset, language }: Props) {
-  const [highlighted, setHighlighted] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!language) {
-      return;
-    }
-    let cancelled = false;
-    codeToANSI(content, language, "github-dark").then((result) => {
-      if (!cancelled) {
-        setHighlighted(result.replace(/\n$/, ""));
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [content, language]);
-
-  const text = highlighted ?? content;
+export function CodeLine({ displayWidth, horizontalOffset, text }: Props) {
   const sliced = useMemo(
     () => sliceAnsi(text, horizontalOffset, horizontalOffset + displayWidth),
     [text, horizontalOffset, displayWidth],
