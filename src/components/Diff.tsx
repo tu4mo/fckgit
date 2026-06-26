@@ -3,6 +3,7 @@ import { ScrollView, type ScrollViewRef } from "ink-scroll-view";
 import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
 
 import { useNotification } from "../hooks/useNotification.js";
+import { useRepository } from "../hooks/useRepository.js";
 import { buildViewState, getMaxLineLength } from "../lib/diff.js";
 import { type ChangedFile } from "../lib/git/status.js";
 import { getLanguage } from "./CodeLine.js";
@@ -20,6 +21,7 @@ type Props = {
 const DEFAULT_CONTEXT_LINES = 3;
 
 export function Diff({ file, focused, width }: Props) {
+  const { stage, unstage } = useRepository();
   const language = useMemo(() => (file ? getLanguage(file.path) : null), [file]);
   const [horizontalOffset, setHorizontalOffset] = useState(0);
   const [contextLines, setContextLines] = useState(DEFAULT_CONTEXT_LINES);
@@ -51,6 +53,13 @@ export function Diff({ file, focused, width }: Props) {
       }
       if (key.rightArrow) {
         setHorizontalOffset((s) => Math.min(maxHorizontal, s + 1));
+      }
+      if (input === " " && file) {
+        if (file.stagedStatus === "FULL") {
+          unstage(file.path);
+        } else {
+          stage(file.path);
+        }
       }
       if (input === "+" && view.mode === "diff") {
         setContextLines((s) => {
