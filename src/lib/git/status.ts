@@ -10,6 +10,7 @@ export type ChangedFile = {
   path: string;
   displayPath: string;
   status: GitFileStatus;
+  workingTreeStatus: GitFileStatus;
   stagedStatus: StagedStatus;
 };
 
@@ -50,10 +51,14 @@ export function getStatus(): ChangedFile[] {
 
       const filePath = line.slice(3);
 
+      const workingTreeStatus: GitFileStatus =
+        workingTreeStatusChar === "?" ? "UNTRACKED" : STATUS_MAP[workingTreeStatusChar ?? ""] ?? "-";
+
       return {
         path: filePath,
         displayPath: path.relative(process.cwd(), path.join(repoRoot, filePath)),
         status: STATUS_MAP[statusCode ?? ""] ?? "-",
+        workingTreeStatus,
         stagedStatus,
       };
     });

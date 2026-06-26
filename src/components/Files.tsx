@@ -98,6 +98,8 @@ export function Files({ width, focused, onSelectedFile }: Props) {
             const name = path.basename(file.displayPath);
             const dir =
               path.dirname(file.displayPath) === "." ? "" : path.dirname(file.displayPath);
+            const displayStatus =
+              file.workingTreeStatus !== "-" ? file.workingTreeStatus : file.status;
 
             return (
               <Box
@@ -116,7 +118,7 @@ export function Files({ width, focused, onSelectedFile }: Props) {
                   </Text>
                 </Box>
                 <Box flexShrink={0} marginLeft={1}>
-                  <Text color={STATUS[file.status].color}>{STATUS[file.status].symbol}</Text>
+                  <Text color={STATUS[displayStatus].color}>{STATUS[displayStatus].symbol}</Text>
                 </Box>
               </Box>
             );
