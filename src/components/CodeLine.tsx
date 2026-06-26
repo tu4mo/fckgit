@@ -5,7 +5,7 @@ import sliceAnsi from 'slice-ansi'
 type Type = 'add' | 'del' | 'normal'
 
 const BACKGROUND_COLOR: Record<Type, string | undefined> = {
-  add: '#052e1666',
+  add: '#052e16',
   del: '#450a0a',
   normal: undefined,
 }
