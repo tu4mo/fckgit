@@ -2,16 +2,19 @@ import { Box, Text } from 'ink'
 import { useMemo } from 'react'
 import sliceAnsi from 'slice-ansi'
 
-const BACKGROUND_COLOR: Record<'add' | 'del', string> = {
+type Type = 'add' | 'del' | 'normal'
+
+const BACKGROUND_COLOR: Record<Type, string | undefined> = {
   add: '#052e1666',
   del: '#450a0a',
+  normal: undefined,
 }
 
 type Props = {
   displayWidth: number
   horizontalOffset: number
   text: string
-  type: 'add' | 'del' | 'normal'
+  type: Type
 }
 
 export function CodeLine({
@@ -26,9 +29,7 @@ export function CodeLine({
   )
 
   return (
-    <Box
-      backgroundColor={type === 'normal' ? undefined : BACKGROUND_COLOR[type]}
-    >
+    <Box backgroundColor={BACKGROUND_COLOR[type]}>
       <Text>{sliced || ' '}</Text>
     </Box>
   )
