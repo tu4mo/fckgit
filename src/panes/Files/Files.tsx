@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { Box, Text, useBoxMetrics, useInput } from 'ink'
+import { Box, Text, useBoxMetrics, useFocus, useInput } from 'ink'
 import { ScrollList } from 'ink-scroll-list'
 import {
   useEffect,
@@ -20,7 +20,6 @@ import {
 import { truncateMiddle } from '../../lib/truncateMiddle.js'
 
 type Props = {
-  focused: boolean
   onSelectedFile: (file: ChangedFile | undefined) => void
   width: ComponentProps<typeof Box>['width']
 }
@@ -40,7 +39,8 @@ const STATUS: Record<GitFileStatus, { symbol: string; color: string }> = {
   '-': { symbol: '⁻', color: 'gray' },
 }
 
-export function Files({ width, focused, onSelectedFile }: Props) {
+export function Files({ width, onSelectedFile }: Props) {
+  const { isFocused } = useFocus({ id: 'files', autoFocus: true })
   const { files, branch, stage, unstage } = useRepository()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const repo = useMemo(() => process.cwd().split('/').pop(), [])
@@ -71,7 +71,7 @@ export function Files({ width, focused, onSelectedFile }: Props) {
         }
       }
     },
-    { isActive: focused },
+    { isActive: isFocused },
   )
 
   const availableWidth =
@@ -88,15 +88,15 @@ export function Files({ width, focused, onSelectedFile }: Props) {
     <Box flexDirection="column" width={width}>
       <LabelBox
         flexGrow={1}
-        focused={focused}
+        isFocused={isFocused}
         label={
           hasMeasured && (
             <Box gap={1} height={1}>
-              <Text bold color={focused ? 'whiteBright' : 'gray'}>
+              <Text bold color={isFocused ? 'whiteBright' : 'gray'}>
                 {truncatedRepo}
               </Text>
               <Text color="gray">⌥</Text>
-              <Text color={focused ? 'whiteBright' : 'gray'}>
+              <Text color={isFocused ? 'whiteBright' : 'gray'}>
                 {truncatedBranch}
               </Text>
             </Box>

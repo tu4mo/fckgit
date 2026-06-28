@@ -1,4 +1,4 @@
-import { Box, useInput } from 'ink'
+import { Box, useFocusManager, useInput } from 'ink'
 import { useEffect, useMemo, useState, type ComponentProps } from 'react'
 
 import { DiffPanel } from '../../components/DiffPanel.js'
@@ -9,13 +9,13 @@ import { getLanguage } from '../../lib/highlight.js'
 
 type Props = {
   file: ChangedFile | undefined
-  focusedPanel: 'unstaged' | 'staged' | null
   width: ComponentProps<typeof Box>['width']
 }
 
 const DEFAULT_CONTEXT_LINES = 3
 
-export function Diff({ file, focusedPanel, width }: Props) {
+export function Diff({ file, width }: Props) {
+  const { activeId } = useFocusManager()
   const language = useMemo(() => (file ? getLanguage(file.path) : null), [file])
   const [contextLines, setContextLines] = useState(DEFAULT_CONTEXT_LINES)
   const { addNotification } = useNotification()
@@ -47,27 +47,25 @@ export function Diff({ file, focusedPanel, width }: Props) {
         })
       }
     },
-    { isActive: focusedPanel !== null },
+    { isActive: activeId === 'diff-unstaged' || activeId === 'diff-staged' },
   )
 
   return (
     <Box flexDirection="column" flexGrow={1} width={width}>
       {hasUnstagedPanel && (
         <DiffPanel
-          key={file?.path}
+          key={`${file?.path}-unstaged`}
           contextLines={contextLines}
           file={file}
-          focused={focusedPanel === 'unstaged'}
           language={language}
           staged={false}
         />
       )}
       {hasStagedPanel && (
         <DiffPanel
-          key={file?.path}
+          key={`${file?.path}-staged`}
           contextLines={contextLines}
           file={file}
-          focused={focusedPanel === 'staged'}
           language={language}
           staged={true}
         />

@@ -1,4 +1,4 @@
-import { Box, Text } from 'ink'
+import { Box, Text, useFocusManager } from 'ink'
 
 import { type Pane } from '../types.js'
 import { Notification } from './Notification.js'
@@ -28,14 +28,13 @@ const COMMANDS: Record<Pane, Command[]> = {
   ],
 }
 
-type Props = {
-  focusedPane: Pane
-}
+export function Footer() {
+  const { activeId } = useFocusManager()
+  const pane = (activeId ?? 'files') as Pane
 
-export function Footer({ focusedPane }: Props) {
   return (
     <Box gap={2} paddingX={1} height={1} overflow="hidden" position="relative">
-      {COMMANDS[focusedPane].map(({ key, label }) => (
+      {COMMANDS[pane].map(({ key, label }) => (
         <Box key={key} gap={1} flexShrink={0}>
           <Text bold color="white">
             {key}

@@ -2,21 +2,21 @@ import { Box } from 'ink'
 import type { ComponentProps, ReactNode } from 'react'
 
 type Props = ComponentProps<typeof Box> & {
-  focused?: boolean
+  isFocused?: boolean
   label: ReactNode
   subLabel?: ReactNode
 }
 
 export function LabelBox({
   children,
-  focused,
+  isFocused,
   label,
   subLabel,
   ...props
 }: Props) {
   return (
     <Box position="relative" {...props}>
-      <Box borderStyle="round" borderColor={focused ? 'white' : 'gray'}>
+      <Box borderStyle="round" borderColor={isFocused ? 'white' : 'gray'}>
         {children}
       </Box>
       <Box gap={1} left={2} right={2} position="absolute">
