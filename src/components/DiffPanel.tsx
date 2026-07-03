@@ -19,7 +19,13 @@ type Props = {
   visible: boolean
 }
 
-export function DiffPanel({ file, staged, contextLines, language, visible }: Props) {
+export function DiffPanel({
+  file,
+  staged,
+  contextLines,
+  language,
+  visible,
+}: Props) {
   const { isFocused } = useFocus({
     id: staged ? 'diff-staged' : 'diff-unstaged',
     isActive: visible,
