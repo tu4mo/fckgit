@@ -1,10 +1,10 @@
 import { render, Box, useApp, useInput, useStdout } from 'ink'
 import { useState } from 'react'
 
+import { Diff } from './components/Diff/Diff.js'
+import { Files } from './components/Files/Files.js'
 import { Footer } from './components/Footer.js'
 import { type ChangedFile } from './lib/git/status.js'
-import { Diff } from './panes/Diff/Diff.js'
-import { Files } from './panes/Files/Files.js'
 
 function App() {
   const { exit } = useApp()

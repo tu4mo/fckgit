@@ -1,11 +1,11 @@
 import { Box, useFocusManager, useInput } from 'ink'
 import { useEffect, useMemo, useState, type ComponentProps } from 'react'
 
-import { DiffPanel } from '../../components/DiffPanel.js'
 import { useNotification } from '../../hooks/useNotification.js'
 import { getPanelVisibility } from '../../lib/diff.js'
 import { type ChangedFile } from '../../lib/git/status.js'
 import { getLanguage } from '../../lib/highlight.js'
+import { DiffPanel } from './DiffPanel.js'
 
 type Props = {
   file: ChangedFile | undefined

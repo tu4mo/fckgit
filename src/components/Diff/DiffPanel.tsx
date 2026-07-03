@@ -1,15 +1,22 @@
-import { Text, useBoxMetrics, useFocus, useFocusManager, useInput } from 'ink'
+import {
+  Box,
+  Text,
+  useBoxMetrics,
+  useFocus,
+  useFocusManager,
+  useInput,
+} from 'ink'
 import { ScrollView, type ScrollViewRef } from 'ink-scroll-view'
 import { useMemo, useRef, useState, type ReactNode } from 'react'
 import type { BundledLanguage } from 'shiki'
 
-import { useHighlightedLines } from '../hooks/useHighlightedLines.js'
-import { useRepository } from '../hooks/useRepository.js'
-import { buildChunks, getMaxLineLength } from '../lib/diff.js'
-import { type ChangedFile } from '../lib/git/status.js'
-import { CodeLine } from './CodeLine.js'
-import { LabelBox } from './LabelBox.js'
-import { Separator } from './Separator.js'
+import { useHighlightedLines } from '../../hooks/useHighlightedLines.js'
+import { useRepository } from '../../hooks/useRepository.js'
+import { buildChunks, getMaxLineLength } from '../../lib/diff.js'
+import { type ChangedFile } from '../../lib/git/status.js'
+import { LabelBox } from '../LabelBox.js'
+import { Separator } from '../Separator.js'
+import { DiffLine } from './DiffLine.js'
 
 type Props = {
   file: ChangedFile | undefined
@@ -89,11 +96,24 @@ export function DiffPanel({
       flexGrow={1}
       isFocused={isFocused}
       label={
-        file && (
+        file &&
+        (file.oldDisplayPath ? (
+          <Box>
+            <Text bold color={labelColor} wrap="truncate-middle">
+              {file.oldDisplayPath}
+            </Text>
+            <Box flexShrink={0}>
+              <Text color={labelColor}>{' → '}</Text>
+            </Box>
+            <Text bold color={labelColor} wrap="truncate-middle">
+              {file.displayPath}
+            </Text>
+          </Box>
+        ) : (
           <Text bold color={labelColor} wrap="truncate-middle">
             {file.displayPath}
           </Text>
-        )
+        ))
       }
       ref={ref}
       subLabel={
@@ -117,7 +137,7 @@ export function DiffPanel({
 
           chunk.changes.forEach((change, i) => {
             items.push(
-              <CodeLine
+              <DiffLine
                 key={`${ci}-${i}`}
                 displayWidth={measuredWidth - 2}
                 horizontalOffset={horizontalOffset}

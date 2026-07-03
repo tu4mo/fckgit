@@ -17,7 +17,7 @@ type Props = {
   type: Type
 }
 
-export function CodeLine({
+export function DiffLine({
   displayWidth,
   horizontalOffset,
   text,
