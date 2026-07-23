@@ -12,12 +12,9 @@ import {
 
 import { LabelBox } from '../../components/LabelBox.js'
 import { useRepository } from '../../hooks/useRepository.js'
-import {
-  type ChangedFile,
-  type GitFileStatus,
-  type StagedStatus,
-} from '../../lib/git/status.js'
+import { type ChangedFile, type StagedStatus } from '../../lib/git/status.js'
 import { truncateMiddle } from '../../lib/truncateMiddle.js'
+import { FilesStatus } from './FilesStatus.js'
 
 type Props = {
   onSelectedFile: (file: ChangedFile | undefined) => void
@@ -28,15 +25,6 @@ const CIRCLE_COLOR: Record<StagedStatus, string> = {
   NONE: 'white',
   PARTIAL: 'yellow',
   FULL: 'green',
-}
-
-const STATUS: Record<GitFileStatus, { symbol: string; color: string }> = {
-  'MODIFIED': { symbol: 'ᵐ', color: 'yellow' },
-  'ADDED': { symbol: 'ᵃ', color: 'green' },
-  'DELETED': { symbol: 'ᵈ', color: 'red' },
-  'RENAMED': { symbol: 'ʳ', color: 'cyan' },
-  'UNTRACKED': { symbol: 'ᵘ', color: 'gray' },
-  '-': { symbol: '⁻', color: 'gray' },
 }
 
 export function Files({ width, onSelectedFile }: Props) {
@@ -112,10 +100,6 @@ export function Files({ width, onSelectedFile }: Props) {
               path.dirname(file.displayPath) === '.'
                 ? ''
                 : path.dirname(file.displayPath)
-            const displayStatus =
-              file.workingTreeStatus !== '-'
-                ? file.workingTreeStatus
-                : file.status
 
             return (
               <Box
@@ -134,11 +118,7 @@ export function Files({ width, onSelectedFile }: Props) {
                     ) : null}
                   </Text>
                 </Box>
-                <Box flexShrink={0}>
-                  <Text color={STATUS[displayStatus].color}>
-                    {STATUS[displayStatus].symbol}
-                  </Text>
-                </Box>
+                <FilesStatus file={file} />
               </Box>
             )
           })}
