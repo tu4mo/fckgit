@@ -34,7 +34,7 @@
   "devDependencies": {
     "@shikijs/cli": "4.4.1",
     "@types/node": "26.1.1",
-    "@types/react": "19.2.17",
+    "@types/react": "19.2.18",
     "ink": "7.1.1",
     "ink-scroll-list": "0.4.1",
     "ink-scroll-view": "0.3.7",
