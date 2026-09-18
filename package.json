@@ -32,7 +32,7 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
-    "@shikijs/cli": "4.4.1",
+    "@shikijs/cli": "4.4.3",
     "@types/node": "26.5.1",
     "@types/react": "19.2.18",
     "ink": "7.1.1",
