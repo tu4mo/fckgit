@@ -1,5 +1,5 @@
 import { Box, useFocusManager, useInput } from 'ink'
-import { useEffect, useMemo, useState, type ComponentProps } from 'react'
+import { useMemo, useState, type ComponentProps } from 'react'
 
 import { useNotification } from '../../hooks/useNotification.js'
 import { getPanelVisibility } from '../../lib/diff.js'
@@ -18,14 +18,16 @@ export function Diff({ file, width }: Props) {
   const { activeId } = useFocusManager()
   const language = useMemo(() => (file ? getLanguage(file.path) : null), [file])
   const [contextLines, setContextLines] = useState(DEFAULT_CONTEXT_LINES)
+  const [trackedPath, setTrackedPath] = useState(file?.path)
   const { addNotification } = useNotification()
 
   const { isContentMode, hasStagedPanel, hasUnstagedPanel } =
     getPanelVisibility(file)
 
-  useEffect(() => {
+  if (file?.path !== trackedPath) {
+    setTrackedPath(file?.path)
     setContextLines(DEFAULT_CONTEXT_LINES)
-  }, [file?.path])
+  }
 
   useInput(
     (input) => {

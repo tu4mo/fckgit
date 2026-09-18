@@ -11,7 +11,6 @@ export function useHighlightedLines(
 
   useEffect(() => {
     if (!language) {
-      setHighlighted(null)
       return
     }
     let cancelled = false
@@ -25,5 +24,5 @@ export function useHighlightedLines(
     }
   }, [joined, language])
 
-  return highlighted
+  return language ? highlighted : null
 }
